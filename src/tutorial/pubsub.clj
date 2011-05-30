@@ -14,8 +14,7 @@
 ;----------------------
 ; Producer portion
 ;----------------------
-(defn emit-log 
-  []
+(defn pubsub-producer []
   (with-broker con-info
     (with-channel
       (create-exchange exchangename "fanout")
@@ -25,8 +24,7 @@
 ;----------------------
 ; Consumer portion
 ;----------------------
-(defn receive-logs
-  []
+(defn pubsub-consumer  []
   (with-broker con-info
     (with-channel
       (def queuename (.queue (queue-declare)))
@@ -37,3 +35,7 @@
             (println "received: " body)
             (println "routing-key: " (:routing-key (:envelope msg)))
             (ack (:delivery-tag (:envelope msg)))))))))
+
+(defn run-pubsub [] 
+  (pubsub-producer)
+  (pubsub-consumer))

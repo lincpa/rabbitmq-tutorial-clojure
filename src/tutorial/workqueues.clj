@@ -16,9 +16,9 @@
 ;----------------------
 ; Producer portion
 ;----------------------
-(defn producer 
+(defn workqueues-producer 
   []
-  (with-broker {:host "localhost" :username "idiscc" :password "1d15cc"}
+  (with-broker con-info
     (with-channel
       (qos 1)
       (create-queue queuename)
@@ -40,9 +40,9 @@
   [task]
   (. Thread (sleep (* 1000 (count (re-find #"\.+" task))))))
 
-(defn consumer
+(defn workqueues-consumer
   []
-  (with-broker {:host "localhost" :username "idiscc" :password "1d15cc"}
+  (with-broker con-info
     (with-channel
       (with-queue queuename 
          (doseq [msg (consuming-seq false)]
@@ -51,3 +51,8 @@
             (work body)
             (println ".Done!")
             (ack (:delivery-tag (:envelope msg)))))))))
+
+
+(defn run-workqueues []
+  (workqueues-producer)
+  (workqueues-consumer))

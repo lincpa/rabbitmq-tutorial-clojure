@@ -1,11 +1,11 @@
 (ns tutorial.queue
   (:use com.mefesto.wabbitmq))
 
-(def con-info {:host "localhost" :username "idiscc" :password "1d15cc"})
+(def con-info {:host "localhost" :username "guest" :password "guest"})
 
 (defn delete-queue
   [queue-name exchange-name]
-    (with-broker {:host "localhost" :username "idiscc" :password "1d15cc"}
+    (with-broker con-info
       (with-channel
         (if (not (= "" exchange-name)) (exchange-delete exchange-name))
         (queue-delete queue-name))))
@@ -21,6 +21,4 @@
   ([name] (exchange-declare name "fanout"))
   ([name type] (exchange-declare name type)))
 
-(defn delete-hello-world-queue []
-    (delete-queue "text.exchange" "test.queue"))
   

@@ -15,8 +15,7 @@
 ;----------------------
 ; Producer portion
 ;----------------------
-(defn emit-log-topic 
-  []
+(defn topic-producer  []
   (with-broker con-info
     (with-channel
       (create-exchange exchangename "topic")
@@ -29,7 +28,7 @@
 ;----------------------
 ; Consumer portion
 ;----------------------
-(defn receive-logs-topic
+(defn topic-consumer
   []
   (with-broker con-info
     (with-channel
@@ -42,3 +41,7 @@
             (println "received: " body)
             (println "routing-key: " (:routing-key (:envelope msg)))
             (ack (:delivery-tag (:envelope msg)))))))))
+
+(defn run-topic []
+  (topic-producer)
+  (topic-consumer))

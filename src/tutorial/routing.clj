@@ -14,8 +14,7 @@
 ;----------------------
 ; Producer portion
 ;----------------------
-(defn emit-log-direct 
-  []
+(defn routing-producer []
   (with-broker con-info
     (with-channel
       (create-exchange exchangename "direct")
@@ -28,17 +27,20 @@
 ;----------------------
 ; Consumer portion
 ;----------------------
-(defn receive-logs-direct
-  []
+(defn routing-consumer []
   (with-broker con-info
     (with-channel
       (def queuename (.queue (queue-declare)))
       (queue-bind queuename exchangename error-routing-key)
       (queue-bind queuename exchangename warning-routing-key)
-      ;(queue-bind queuename exchangename info-routing-key)
+      (queue-bind queuename exchangename info-routing-key)
       (with-queue queuename
          (doseq [msg (consuming-seq false)]
           (let [body (String. (:body msg))]
             (println "received: " body)
             (println "routing-key: " (:routing-key (:envelope msg)))
             (ack (:delivery-tag (:envelope msg)))))))))
+
+(defn run-routing []
+  (routing-producer)
+  (routing-consumer))

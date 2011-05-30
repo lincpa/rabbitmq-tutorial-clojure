@@ -8,9 +8,9 @@
 ;----------------------
 ; Producer portion
 ;----------------------
-(defn producer 
+(defn helloworld-producer 
   []
-  (with-broker {:host "localhost" :username "idiscc" :password "1d15cc"}
+  (with-broker con-info
     (with-channel
       (create-queue queuename)
       (create-exchange exchangename "fanout")
@@ -23,10 +23,19 @@
 ;----------------------
 ; Consumer portion
 ;----------------------
-(defn consumer
+(defn helloworld-consumer
   []
-  (with-broker {:host "localhost" :username "idiscc" :password "1d15cc"}
+  (with-broker con-info
     (with-channel
       (with-queue queuename
          (doseq [msg (consuming-seq true)]
            (println "received: " (String. (:body msg))))))))
+
+
+(defn run-helloworld []
+   (helloworld-producer)
+   (helloworld-producer)
+   (helloworld-producer)
+  
+   ;We now have 3 messages queued up so lets 'consume' them
+   (helloworld-consumer))
