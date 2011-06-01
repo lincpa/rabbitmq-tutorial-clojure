@@ -8,8 +8,8 @@
   (:use com.mefesto.wabbitmq)
   (:use tutorial.queue))
 
-(def queuename "work.queue")
-(def exchangename "work.exchange")
+(def wq-queuename "work.queue")
+(def wq-exchangename "work.exchange")
 (def routing-key "")
 (def persistent-delivery-mode 2) 
 
@@ -21,11 +21,11 @@
   (with-broker con-info
     (with-channel
       (qos 1)
-      (create-queue queuename)
-      (create-exchange exchangename "fanout")
-      (queue-bind queuename exchangename routing-key)
+      (create-queue wq-queuename)
+      (create-exchange wq-exchangename "fanout")
+      (queue-bind wq-queuename wq-exchangename routing-key)
       
-      (with-exchange exchangename 
+      (with-exchange wq-exchangename 
         (publish routing-key persistent-delivery-mode (.getBytes "First Task..") )
         (publish routing-key persistent-delivery-mode (.getBytes "Second Task."))
         (publish routing-key persistent-delivery-mode (.getBytes "Third Task....."))
@@ -36,7 +36,7 @@
 ;----------------------
 ; Consumer portion
 ;----------------------
-(defn work
+(defn wq-work
   [task]
   (. Thread (sleep (* 1000 (count (re-find #"\.+" task))))))
 
@@ -44,11 +44,11 @@
   []
   (with-broker con-info
     (with-channel
-      (with-queue queuename 
+      (with-queue wq-queuename 
          (doseq [msg (consuming-seq false)]
           (let [body (String. (:body msg))]
             (print "received: " body)
-            (work body)
+            (wq-work body)
             (println ".Done!")
             (ack (:delivery-tag (:envelope msg)))))))))
 

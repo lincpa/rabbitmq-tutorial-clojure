@@ -7,7 +7,7 @@
   (:use com.mefesto.wabbitmq)
   (:use tutorial.queue))
 
-(def exchangename "topic.exchange")
+(def t-exchangename "topic.exchange")
 (def esig-routing-key "esig.error")
 (def idiscc-routing-key "idiscc.warning")
 (def cine-routing-key "cine.info")
@@ -18,8 +18,8 @@
 (defn topic-producer  []
   (with-broker con-info
     (with-channel
-      (create-exchange exchangename "topic")
-      (with-exchange exchangename 
+      (create-exchange t-exchangename "topic")
+      (with-exchange t-exchangename 
         (publish esig-routing-key (.getBytes "Esig Error topic Entry."))
         (publish idiscc-routing-key (.getBytes "iDiscc topic Entry."))
         (publish cine-routing-key (.getBytes "info topic Entry."))
@@ -32,15 +32,15 @@
   []
   (with-broker con-info
     (with-channel
-      (def queuename (.queue (queue-declare)))
-      (queue-bind queuename exchangename esig-routing-key)
-      (queue-bind queuename exchangename "*.warning")
+      (let [queuename (.queue (queue-declare))]
+      (queue-bind queuename t-exchangename esig-routing-key)
+      (queue-bind queuename t-exchangename "*.warning")
       (with-queue queuename
          (doseq [msg (consuming-seq false)]
           (let [body (String. (:body msg))]
             (println "received: " body)
             (println "routing-key: " (:routing-key (:envelope msg)))
-            (ack (:delivery-tag (:envelope msg)))))))))
+            (ack (:delivery-tag (:envelope msg))))))))))
 
 (defn run-topic []
   (topic-producer)

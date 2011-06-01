@@ -8,8 +8,8 @@
   (:use com.mefesto.wabbitmq)
   (:use tutorial.queue))
 
-(def exchangename "pubsub.exchange")
-(def routing-key "")
+(def ps-exchangename "pubsub.exchange")
+(def ps-routing-key "")
 
 ;----------------------
 ; Producer portion
@@ -17,9 +17,9 @@
 (defn pubsub-producer []
   (with-broker con-info
     (with-channel
-      (create-exchange exchangename "fanout")
-      (with-exchange exchangename 
-        (publish routing-key (.getBytes "First Log Entry."))))))
+      (create-exchange ps-exchangename "fanout")
+      (with-exchange ps-exchangename 
+        (publish ps-routing-key (.getBytes "First Log Entry."))))))
 
 ;----------------------
 ; Consumer portion
@@ -27,14 +27,14 @@
 (defn pubsub-consumer  []
   (with-broker con-info
     (with-channel
-      (def queuename (.queue (queue-declare)))
-      (queue-bind queuename exchangename routing-key)
+      (let [queuename (.queue (queue-declare))]
+      (queue-bind queuename ps-exchangename ps-routing-key)
       (with-queue queuename
          (doseq [msg (consuming-seq false)]
           (let [body (String. (:body msg))]
             (println "received: " body)
             (println "routing-key: " (:routing-key (:envelope msg)))
-            (ack (:delivery-tag (:envelope msg)))))))))
+            (ack (:delivery-tag (:envelope msg))))))))))
 
 (defn run-pubsub [] 
   (pubsub-producer)
