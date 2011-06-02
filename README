@@ -1,13 +1,24 @@
-# tutorial
+I ported the first 5 examples from http://www.rabbitmq.com/getstarted.html
+into clojure using the WabbitMQ libraryi(https://github.com/mefesto/wabbitmq) 
+to help me understand how to interact with RabbitMQ using clojure.
 
-FIXME: write description
+I wrote a main function to make it a little easier to interact with the samples.
+Here is what lein run --help produces:
 
-## Usage
+An interface to all of the RabbintMQ tutorials I converted to clojure
+Options
+  --tut <arg>   which toturial to run. (hello, work, publish, route, topics) 
+  --role <arg>  which role to play consumer or producer (c,p)                
 
-FIXME: write
+If I wanted to run the producer for the first sample I would start it like so:
 
-## License
+lein run --tut hello --role p
 
-Copyright (C) 2011 FIXME
+and the consumer would be:
 
-Distributed under the Eclipse Public License, the same as Clojure.
+lein run --tut hello --role c
+
+I read the tutorials and worked on the clojure code while I read the tutorails
+while I worked on each of these examples.  The tutorials write ups were very
+helpful.
+
