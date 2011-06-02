@@ -1,7 +1,12 @@
-I ported the first 5 examples from http://www.rabbitmq.com/getstarted.html
-into clojure using the WabbitMQ libraryi(https://github.com/mefesto/wabbitmq) 
-to help me understand how to interact with RabbitMQ using clojure.
+I ported the first 5 examples from:
 
+ http://www.rabbitmq.com/getstarted.html
+
+into clojure using the WabbitMQ library:
+
+ https://github.com/mefesto/wabbitmq
+ 
+to help me understand how to interact with RabbitMQ using clojure.
 I wrote a main function to make it a little easier to interact with the samples.
 Here is what lein run --help produces:
 
@@ -20,5 +25,5 @@ lein run --tut hello --role c
 
 I read the tutorials and worked on the clojure code while I read the tutorails
 while I worked on each of these examples.  The tutorials write ups were very
-helpful.
+helpful. Check them out yourself  http://www.rabbitmq.com/getstarted.html 
 
